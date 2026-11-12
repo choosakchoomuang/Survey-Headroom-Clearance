@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Survey Headroom Clearance | Schindler</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --schindler-red: #E2001A;
+            --success-green: #28a745;
+            --danger-red: #dc3545;
+            --dark-grey: #333333;
+            --light-grey: #F8F9FA;
+            --white: #ffffff;
+        }
+
+        body {
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            margin: 0;
+            background-color: var(--light-grey);
+            color: var(--dark-grey);
+            line-height: 1.6;
+        }
+
+        header {
+            background-color: var(--schindler-red);
+            color: var(--white);
+            padding: 20px 25px;
+            text-align: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 24px;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+        }
+
+        header p {
+            margin: 5px 0 0;
+            font-size: 12px;
+            opacity: 0.95;
+            letter-spacing: 2px;
+            font-weight: 300;
+        }
+
+        .container {
+            max-width: 950px;
+            margin: 30px auto;
+            background: var(--white);
+            padding: 35px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            border-top: 6px solid var(--schindler-red);
+        }
+
+        h3 {
+            border-left: 4px solid var(--schindler-red);
+            padding-left: 12px;
+            color: var(--dark-grey);
+            margin-top: 0;
+            margin-bottom: 20px;
+            font-size: 18px;
+        }
+
+        /* ส่วนแสดงรูปภาพทั้ง 3 รูปแบบ Gallery */
+        .diagram-gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .diagram-card {
+            background: #ffffff;
+            border: 1px solid #e0e0e0;
+            padding: 10px;
+            border-radius: 4px;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+        }
+
+        .diagram-card img {
+            width: 100%;
+            height: 180px;
+            object-fit: contain;
+            border-radius: 4px;
+            cursor: zoom-in;
+            transition: transform 0.2s;
+            background-color: #fafafa;
+        }
+
+        .diagram-card img:hover {
+            transform: scale(1.03);
+        }
+
+        .diagram-caption {
+            font-size: 12px;
+            color: #555;
+            margin-top: 8px;
+            font-weight: bold;
+        }
+
+        /* Lightbox Modal สำหรับขยายรูป */
+        .lightbox {
+            display: none;
+            position: fixed;
+            z-index: 10000;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.9);
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            box-sizing: border-box;
+            cursor: zoom-out;
+        }
+
+        .lightbox img {
+            max-width: 95%;
+            max-height: 95%;
+            object-fit: contain;
+        }
+
+        .section-box {
+            background: #fafafa;
+            border: 1px solid #e0e0e0;
+            padding: 20px;
+            margin-bottom: 25px;
+            border-radius: 4px;
+        }
+
+        .section-title {
+            font-size: 15px;
+            font-weight: bold;
+            color: var(--schindler-red);
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 5px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 15px;
+            margin-bottom: 10px;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: bold;
+            font-size: 12px;
+            margin-bottom: 6px;
+            color: #555;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 10px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 15px;
+            font-weight: bold;
+            color: #222;
+        }
+
+        .form-group input::placeholder {
+            color: #aaa;
+            font-weight: normal;
+            font-size: 13px;
+        }
+
+        .form-group input:focus {
+            border-color: var(--schindler-red);
+            outline: none;
+            box-shadow: 0 0 5px rgba(226, 0, 26, 0.3);
+        }
+
+        .btn-calc {
+            background-color: var(--schindler-red);
+            color: white;
+            border: none;
+            padding: 14px 25px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            text-transform: uppercase;
+            width: 100%;
+            border-radius: 4px;
+            transition: background 0.2s, transform 0.1s;
+            letter-spacing: 1px;
+            box-shadow: 0 4px 10px rgba(226, 0, 26, 0.3);
+        }
+
+        .btn-calc:hover { background-color: #b50014; }
+        .btn-calc:active { transform: scale(0.99); }
+
+        .result-section {
+            margin-top: 30px;
+            padding: 25px;
+            background: #ffffff;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.04);
+        }
+
+        .summary-banner {
+            padding: 15px;
+            margin-bottom: 20px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 16px;
+            border-radius: 4px;
+            text-transform: uppercase;
+        }
+        .banner-pass { background-color: #e8f5e9; color: var(--success-green); border: 1px solid #c8e6c9; }
+        .banner-fail { background-color: #ffebee; color: var(--danger-red); border: 1px solid #ffcdd2; }
+
+        .result-card {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr;
+            align-items: center;
+            padding: 16px 20px;
+            margin-bottom: 12px;
+            background: #fdfdfd;
+            border: 1px solid #eee;
+            border-left: 6px solid #ccc;
+            border-radius: 4px;
+        }
+
+        .result-card.pass-border { border-left-color: var(--success-green); }
+        .result-card.fail-border { border-left-color: var(--danger-red); }
+
+        .result-card .title { font-weight: bold; font-size: 15px; color: var(--dark-grey); }
+        .result-card .sub-title { font-size: 12px; color: #777; margin-top: 3px; }
+        .result-card .value { font-size: 20px; font-weight: bold; text-align: center; color: #222; }
+
+        .status-badge {
+            padding: 6px 16px;
+            border-radius: 3px;
+            color: white;
+            font-weight: bold;
+            font-size: 13px;
+            text-align: center;
+            letter-spacing: 1px;
+            justify-self: end;
+        }
+        .pass { background-color: var(--success-green); }
+        .fail { background-color: var(--danger-red); }
+
+        /* Floating Back Button */
+        .back-btn {
+            position: fixed;
+            bottom: 25px;
+            left: 25px;
+            background-color: var(--schindler-red);
+            color: white;
+            padding: 12px 20px;
+            border-radius: 4px;
+            text-decoration: none;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            z-index: 9999;
+            font-weight: bold;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: background 0.2s;
+        }
+        .back-btn:hover { background-color: #b50014; }
+
+        @media (max-width: 600px) {
+            .result-card { grid-template-columns: 1fr; gap: 10px; text-align: left; }
+            .status-badge { justify-self: start; }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>SURVEY HEADROOM CLEARANCE</h1>
+    <p>DETECT • ANALYZE • DIRECT • CORRECT</p>
+</header>
+
+<div class="container">
+    <h3>ระบบคำนวณและประเมินระยะปลอดภัย (Survey Headroom Clearance)</h3>
+    
+    <!-- ส่วนแสดงรูปภาพแนบ 3 รูปอ้างอิง -->
+    <div class="diagram-gallery">
+        <div class="diagram-card">
+            <img src="image/survey-headroom.jpeg" alt="Survey Headroom Diagram" onclick="openLightbox(this.src)" onerror="this.onerror=null; this.src='image/headroom.jpeg';">
+            <div class="diagram-caption"><i class="fas fa-search-plus"></i> ภาพที่ 1: แบบแปลน Headroom Survey</div>
+        </div>
+        <div class="diagram-card">
+            <img src="image/headroom.jpeg" alt="Headroom Overview" onclick="openLightbox(this.src)" onerror="this.onerror=null; this.src='image/survey-headroom.jpeg';">
+            <div class="diagram-caption"><i class="fas fa-search-plus"></i> ภาพที่ 2: รายละเอียดระยะ A, B, D</div>
+        </div>
+        <div class="diagram-card">
+            <img src="image/D2.jpeg" alt="Clearance Reference" onclick="openLightbox(this.src)" onerror="this.onerror=null; this.src='image/headroom.jpeg';">
+            <div class="diagram-caption"><i class="fas fa-search-plus"></i> ภาพที่ 3: จุดวัดอุปกรณ์หน้างาน</div>
+        </div>
+    </div>
+
+    <!-- ส่วนที่ 1: ข้อมูลการวัดหน้างานจริง (Site Measurements) -->
+    <div class="section-box">
+        <div class="section-title"><i class="fas fa-ruler-combined"></i> 1. ข้อมูลการวัดหน้างานจริง (Site Measurements)</div>
+        <div class="form-grid">
+            <div class="form-group">
+                <label>HSK (mm) [ความสูงปล่องที่วัดได้]:</label>
+                <input type="number" id="hsk" placeholder="ระบุระยะ HSK ความสูงของปล่องลิฟต์">
+            </div>
+            <div class="form-group">
+                <label>Hook หรือส่วนที่ยื่นลงมาจากเพดานปล่อง (mm):</label>
+                <input type="number" id="hook" placeholder="ระบุระยะ Hook ที่ยื่นลงมาจากเพดานปล่อง">
+            </div>
+        </div>
+    </div>
+
+    <!-- ส่วนที่ 2: ค่าพารามิเตอร์และข้อมูลจากแบบติดตั้ง (Drawing & Parameters) -->
+    <div class="section-box">
+        <div class="section-title"><i class="fas fa-file-blueprint"></i> 2. ค่าพารามิเตอร์และแบบติดตั้ง (Installation Drawing Data)</div>
+        <div class="form-grid">
+            <div class="form-group">
+                <label>SKS (mm):</label>
+                <input type="number" id="sks" placeholder="ระยะSKS">
+            </div>
+            <div class="form-group">
+                <label>HGP (mm):</label>
+                <input type="number" id="hgp" placeholder="ระยะรันบายเวท">
+            </div>
+            <div class="form-group">
+                <label>HPHG (mm):</label>
+                <input type="number" id="hphg" placeholder="ระยะยุบบัฟเฟอร์เวท">
+            </div>
+            <div class="form-group">
+                <label>X (mm):</label>
+                <input type="number" id="x" placeholder="ระยะ offset">
+            </div>
+            <div class="form-group">
+                <label>HK (mm):</label>
+                <input type="number" id="hk" placeholder="ระยะความสูงตู้ลิฟท์">
+            </div>
+            <div class="form-group">
+                <label>HKD (mm):</label>
+                <input type="number" id="hkd" placeholder="ระยะพื้นหลังคาลิฟต์">
+            </div>
+            <div class="form-group">
+                <label>LFKK (mm):</label>
+                <input type="number" id="lfkk" placeholder="ระยะปลายรางลิฟต์">
+            </div>
+            <div class="form-group">
+                <label>Balustrade Height (mm):</label>
+                <input type="number" id="balustrade" placeholder="ระยะความสูงของราวกันตก">
+            </div>
+        </div>
+    </div>
+
+    <button class="btn-calc" onclick="calculateSurvey()">ประเมินและคำนวณผล (Calculate & Analyze)</button>
+
+    <!-- ผลการคำนวณ -->
+    <div class="result-section" id="resultBox" style="display:none;">
+        <h3>ผลการประเมินระยะปลอดภัย (Evaluation Results)</h3>
+        
+        <div id="summaryBanner" class="summary-banner"></div>
+
+        <!-- Distance A-Y Card -->
+        <div class="result-card" id="cardA">
+            <div>
+                <div class="title">Safety Distance A-Y</div>
+                <div class="sub-title">เกณฑ์มาตรฐาน: A-Y &ge; 1000 mm</div>
+            </div>
+            <div class="value"><span id="resAY">0</span> <small>mm</small></div>
+            <div id="badgeA" class="status-badge"></div>
+        </div>
+
+        <!-- Distance B-Y Card -->
+        <div class="result-card" id="cardB">
+            <div>
+                <div class="title">Safety Distance B-Y</div>
+                <div class="sub-title">เกณฑ์มาตรฐาน: B-Y &ge; 300 mm</div>
+            </div>
+            <div class="value"><span id="resBY">0</span> <small>mm</small></div>
+            <div id="badgeB" class="status-badge"></div>
+        </div>
+
+        <!-- Distance D-Y Card -->
+        <div class="result-card" id="cardD">
+            <div>
+                <div class="title">Safety Distance D-Y</div>
+                <div class="sub-title">เกณฑ์มาตรฐาน: D-Y &ge; 100 mm</div>
+            </div>
+            <div class="value"><span id="resDY">0</span> <small>mm</small></div>
+            <div id="badgeD" class="status-badge"></div>
+        </div>
+    </div>
+</div>
+
+<!-- Lightbox Modal สำหรับขยายรูป -->
+<div id="imageLightbox" class="lightbox" onclick="this.style.display='none'">
+    <img id="lightboxImg" src="" alt="Full Size Reference">
+</div>
+
+<!-- ปุ่มย้อนกลับหน้าหลัก -->
+<a href="index.html" class="back-btn">
+    <i class="fas fa-arrow-left"></i> กลับหน้า Dashboard
+</a>
+
+<script>
+function openLightbox(src) {
+    document.getElementById('lightboxImg').src = src;
+    document.getElementById('imageLightbox').style.display = 'flex';
+}
+
+function calculateSurvey() {
+    let hsk = parseFloat(document.getElementById('hsk').value) || 0;
+    let hook = parseFloat(document.getElementById('hook').value) || 0;
+    
+    let sks = parseFloat(document.getElementById('sks').value) || 0;
+    let hgp = parseFloat(document.getElementById('hgp').value) || 0;
+    let hphg = parseFloat(document.getElementById('hphg').value) || 0;
+    let x = parseFloat(document.getElementById('x').value) || 0;
+    let hk = parseFloat(document.getElementById('hk').value) || 0;
+    let hkd = parseFloat(document.getElementById('hkd').value) || 0;
+    let lfkk = parseFloat(document.getElementById('lfkk').value) || 0;
+    let balustrade = parseFloat(document.getElementById('balustrade').value) || 0;
+
+    // คำนวณ Total Y
+    let totalY = sks + hgp + hphg + x;
+
+    // คำนวณระยะ A, B, D ตามสูตรเดิมอย่างถูกต้อง
+    let calcA = hsk - hk - hkd - hook;
+    let calcB = calcA - balustrade;
+    let calcD = hsk - lfkk;
+
+    // คำนวณหักลบ Total Y (A-Y, B-Y, D-Y)
+    let ay = calcA - totalY;
+    let by = calcB - totalY;
+    let dy = calcD - totalY;
+
+    // แสดงผล
+    document.getElementById('resAY').innerText = ay.toFixed(1);
+    document.getElementById('resBY').innerText = by.toFixed(1);
+    document.getElementById('resDY').innerText = dy.toFixed(1);
+
+    // เกณฑ์มาตรฐาน
+    let isPassA = ay >= 1000;
+    let isPassB = by >= 300;
+    let isPassD = dy >= 100;
+
+    let badgeA = document.getElementById('badgeA');
+    let badgeB = document.getElementById('badgeB');
+    let badgeD = document.getElementById('badgeD');
+
+    let cardA = document.getElementById('cardA');
+    let cardB = document.getElementById('cardB');
+    let cardD = document.getElementById('cardD');
+
+    badgeA.className = "status-badge " + (isPassA ? "pass" : "fail");
+    badgeA.innerText = isPassA ? "PASS" : "FAIL";
+    cardA.className = "result-card " + (isPassA ? "pass-border" : "fail-border");
+
+    badgeB.className = "status-badge " + (isPassB ? "pass" : "fail");
+    badgeB.innerText = isPassB ? "PASS" : "FAIL";
+    cardB.className = "result-card " + (isPassB ? "pass-border" : "fail-border");
+
+    badgeD.className = "status-badge " + (isPassD ? "pass" : "fail");
+    badgeD.innerText = isPassD ? "PASS" : "FAIL";
+    cardD.className = "result-card " + (isPassD ? "pass-border" : "fail-border");
+
+    let summaryBanner = document.getElementById('summaryBanner');
+    if (isPassA && isPassB && isPassD) {
+        summaryBanner.className = "summary-banner banner-pass";
+        summaryBanner.innerHTML = '<i class="fas fa-check-circle"></i> ผลการตรวจสอบปล่องลิฟต์: ผ่านเกณฑ์ความปลอดภัยทั้งหมด (Hand-over Approved)';
+    } else {
+        summaryBanner.className = "summary-banner banner-fail";
+        summaryBanner.innerHTML = '<i class="fas fa-exclamation-triangle"></i> ผลการตรวจสอบปล่องลิฟต์: ไม่ผ่านเกณฑ์มาตรฐาน (Action Required)';
+    }
+
+    document.getElementById('resultBox').style.display = "block";
+}
+</script>
+
+</body>
+</html>
